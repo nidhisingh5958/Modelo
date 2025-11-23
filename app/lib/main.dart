@@ -16,7 +16,7 @@ class LaModa extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => WardrobeProvider(),
       child: MaterialApp(
-        title: 'La Moda - AI Wardrobe Manager',
+        title: 'Modelo - AI Wardrobe Manager',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(

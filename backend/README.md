@@ -1,4 +1,4 @@
-# La Moda Backend API
+# Modelo Backend API
 
 AI-powered backend service for wardrobe management and outfit recommendations.
 

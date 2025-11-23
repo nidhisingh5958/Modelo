@@ -99,7 +99,7 @@ class HomeTab extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
               ),
               child: const Text(
-                'La Moda',
+                'Modelo',
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,

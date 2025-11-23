@@ -1,4 +1,4 @@
-# La Moda - AI-Powered Wardrobe Manager
+# Modelo - AI-Powered Wardrobe Manager
 
 A comprehensive Flutter mobile app for managing your wardrobe and getting personalized outfit recommendations using AI styling algorithms.
 
@@ -239,4 +239,4 @@ For support and questions:
 
 ---
 
-**La Moda** - Empowering confident style choices through AI-powered wardrobe management.
+**Modelo** - Empowering confident style choices through AI-powered wardrobe management.

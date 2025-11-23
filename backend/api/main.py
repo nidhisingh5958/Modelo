@@ -9,7 +9,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from ml_models.outfit_recommender import OutfitRecommender
 import json
 
-app = FastAPI(title="La Moda API", description="AI-Powered Wardrobe Management API", version="1.0.0")
+app = FastAPI(title="Modelo API", description="AI-Powered Wardrobe Management API", version="1.0.0")
 
 # CORS middleware
 app.add_middleware(
@@ -66,7 +66,7 @@ class OutfitRecommendation(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "La Moda API is running"}
+    return {"message": "Modelo API is running"}
 
 @app.post("/api/recommendations/outfits", response_model=List[OutfitRecommendation])
 async def get_outfit_recommendations(request: OutfitRequest):
@@ -183,7 +183,7 @@ async def upload_image(file: UploadFile = File(...)):
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "healthy", "service": "La Moda API"}
+    return {"status": "healthy", "service": "Modelo API"}
 
 if __name__ == "__main__":
     import uvicorn

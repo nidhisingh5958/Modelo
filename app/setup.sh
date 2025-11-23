@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🚀 Setting up La Moda - AI Wardrobe Manager"
+echo "🚀 Setting up Modelo - AI Wardrobe Manager"
 echo "=========================================="
 
 # Check if Flutter is installed
@@ -63,4 +63,4 @@ echo "   - Flutter app: README.md"
 echo "   - Backend API: backend/README.md"
 echo "   - Features: FEATURES.md"
 echo ""
-echo "🌟 Enjoy using La Moda!"
+echo "🌟 Enjoy using Modelo!"
