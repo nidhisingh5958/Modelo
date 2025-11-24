@@ -4,9 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modelo - AI-Powered Personal Styling Assistant</title>
+    <meta name="description" content="Transform your wardrobe with AI-powered outfit recommendations, smart wardrobe management, and personalized style insights.">
+    <meta name="keywords" content="AI fashion, personal stylist, wardrobe management, outfit recommendations, style assistant">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👗</text></svg>">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Modelo">
 </head>
 <body>
     <!-- Navigation -->
@@ -21,8 +29,14 @@
                 <li><a href="#features">Features</a></li>
                 <li><a href="#ai-tech">AI Technology</a></li>
                 <li><a href="#demo">Demo</a></li>
+                <li><a href="#api">API</a></li>
                 <li><a href="#download">Download</a></li>
             </ul>
+            <div class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </nav>
 
@@ -231,6 +245,7 @@
                     <button class="demo-tab active" data-tab="wardrobe">Digital Wardrobe</button>
                     <button class="demo-tab" data-tab="outfits">AI Outfits</button>
                     <button class="demo-tab" data-tab="analysis">Style Analysis</button>
+                    <button class="demo-tab" data-tab="live-demo">Live Demo</button>
                 </div>
                 
                 <div class="demo-content">
@@ -241,18 +256,48 @@
                                 <div class="wardrobe-item" style="background: linear-gradient(45deg, #FF6B6B, #FF8E8E);">
                                     <i class="fas fa-tshirt"></i>
                                     <span>Red Blouse</span>
+                                    <div class="item-stats">
+                                        <span class="rating">⭐ 4.5</span>
+                                        <span class="worn">Worn 12x</span>
+                                    </div>
                                 </div>
                                 <div class="wardrobe-item" style="background: linear-gradient(45deg, #4ECDC4, #44A08D);">
                                     <i class="fas fa-vest"></i>
                                     <span>Blue Jeans</span>
+                                    <div class="item-stats">
+                                        <span class="rating">⭐ 5.0</span>
+                                        <span class="worn">Worn 25x</span>
+                                    </div>
                                 </div>
                                 <div class="wardrobe-item" style="background: linear-gradient(45deg, #45B7D1, #96CEB4);">
                                     <i class="fas fa-dress"></i>
                                     <span>Summer Dress</span>
+                                    <div class="item-stats">
+                                        <span class="rating">⭐ 4.8</span>
+                                        <span class="worn">Worn 8x</span>
+                                    </div>
                                 </div>
                                 <div class="wardrobe-item" style="background: linear-gradient(45deg, #FECA57, #FF9FF3);">
                                     <i class="fas fa-shoe-prints"></i>
                                     <span>Sneakers</span>
+                                    <div class="item-stats">
+                                        <span class="rating">⭐ 4.2</span>
+                                        <span class="worn">Worn 18x</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="wardrobe-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">127</span>
+                                    <span class="stat-label">Total Items</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">4.6</span>
+                                    <span class="stat-label">Avg Rating</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">89%</span>
+                                    <span class="stat-label">Utilization</span>
                                 </div>
                             </div>
                         </div>
@@ -261,6 +306,23 @@
                     <div class="demo-panel" id="outfits">
                         <div class="demo-screen">
                             <h3>AI-Generated Outfits</h3>
+                            <div class="outfit-generator">
+                                <div class="generator-controls">
+                                    <select class="occasion-select">
+                                        <option value="work">Work</option>
+                                        <option value="casual">Casual</option>
+                                        <option value="formal">Formal</option>
+                                        <option value="party">Party</option>
+                                    </select>
+                                    <select class="weather-select">
+                                        <option value="mild">Mild Weather</option>
+                                        <option value="hot">Hot</option>
+                                        <option value="cold">Cold</option>
+                                        <option value="rainy">Rainy</option>
+                                    </select>
+                                    <button class="generate-btn" onclick="generateOutfits()">Generate Outfits</button>
+                                </div>
+                            </div>
                             <div class="outfit-suggestions">
                                 <div class="suggestion-card">
                                     <div class="suggestion-header">
@@ -272,6 +334,10 @@
                                         <div class="suggestion-item">White Shirt</div>
                                         <div class="suggestion-item">Black Trousers</div>
                                     </div>
+                                    <div class="suggestion-actions">
+                                        <button class="btn-save">💾 Save</button>
+                                        <button class="btn-rate">⭐ Rate</button>
+                                    </div>
                                 </div>
                                 <div class="suggestion-card">
                                     <div class="suggestion-header">
@@ -282,6 +348,10 @@
                                         <div class="suggestion-item">Denim Jacket</div>
                                         <div class="suggestion-item">Striped Tee</div>
                                         <div class="suggestion-item">Blue Jeans</div>
+                                    </div>
+                                    <div class="suggestion-actions">
+                                        <button class="btn-save">💾 Save</button>
+                                        <button class="btn-rate">⭐ Rate</button>
                                     </div>
                                 </div>
                             </div>
@@ -314,6 +384,164 @@
                                     <div class="metric-value">95%</div>
                                 </div>
                             </div>
+                            <div class="style-tips">
+                                <h4>AI Style Recommendations</h4>
+                                <div class="tip-item">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <span>For your hourglass shape, emphasize your waist with belted styles</span>
+                                </div>
+                                <div class="tip-item">
+                                    <i class="fas fa-palette"></i>
+                                    <span>Warm colors like coral and peach complement your skin tone</span>
+                                </div>
+                                <div class="tip-item">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>You wear blue items 40% more than other colors</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="demo-panel" id="live-demo">
+                        <div class="demo-screen">
+                            <h3>Try Live API Demo</h3>
+                            <div class="api-demo">
+                                <div class="demo-input">
+                                    <h4>Test Color Compatibility</h4>
+                                    <div class="color-inputs">
+                                        <select id="color1">
+                                            <option value="blue">Blue</option>
+                                            <option value="red">Red</option>
+                                            <option value="green">Green</option>
+                                            <option value="yellow">Yellow</option>
+                                            <option value="black">Black</option>
+                                            <option value="white">White</option>
+                                        </select>
+                                        <span>+</span>
+                                        <select id="color2">
+                                            <option value="white">White</option>
+                                            <option value="black">Black</option>
+                                            <option value="gray">Gray</option>
+                                            <option value="navy">Navy</option>
+                                            <option value="beige">Beige</option>
+                                        </select>
+                                        <button onclick="testColorCompatibility()">Test Compatibility</button>
+                                    </div>
+                                </div>
+                                <div class="demo-output" id="api-result">
+                                    <div class="result-placeholder">
+                                        <i class="fas fa-flask"></i>
+                                        <p>Click "Test Compatibility" to see AI color analysis</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Integration Section -->
+    <section id="api" class="api-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Powerful API Integration</h2>
+                <p>Integrate Modelo's AI capabilities into your own applications</p>
+            </div>
+            
+            <div class="api-content">
+                <div class="api-features">
+                    <div class="api-feature">
+                        <div class="api-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3>RESTful API</h3>
+                        <p>Clean, well-documented REST endpoints for all AI features</p>
+                        <div class="api-endpoint">
+                            <code>POST /api/recommendations/outfits</code>
+                        </div>
+                    </div>
+                    
+                    <div class="api-feature">
+                        <div class="api-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>AI Models</h3>
+                        <p>Access to advanced color theory, body type analysis, and style recommendations</p>
+                        <div class="api-endpoint">
+                            <code>POST /api/analysis/color-compatibility</code>
+                        </div>
+                    </div>
+                    
+                    <div class="api-feature">
+                        <div class="api-icon">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <h3>Image Analysis</h3>
+                        <p>Computer vision for automatic clothing recognition and categorization</p>
+                        <div class="api-endpoint">
+                            <code>POST /api/upload/image</code>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="api-demo-code">
+                    <div class="code-tabs">
+                        <button class="code-tab active" data-lang="javascript">JavaScript</button>
+                        <button class="code-tab" data-lang="python">Python</button>
+                        <button class="code-tab" data-lang="curl">cURL</button>
+                    </div>
+                    
+                    <div class="code-content">
+                        <div class="code-block active" id="javascript">
+                            <pre><code>// Get outfit recommendations
+const response = await fetch('/api/recommendations/outfits', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    wardrobeItems: wardrobeData,
+    userProfile: profileData,
+    occasion: 'work',
+    weather: 'mild',
+    maxSuggestions: 5
+  })
+});
+
+const outfits = await response.json();
+console.log('AI Recommendations:', outfits);</code></pre>
+                        </div>
+                        
+                        <div class="code-block" id="python">
+                            <pre><code>import requests
+
+# Get style recommendations
+response = requests.post(
+    'http://localhost:8000/api/recommendations/style-tips',
+    json={
+        'bodyType': 'hourglass',
+        'skinUndertone': 'warm',
+        'favoriteColors': ['blue', 'white']
+    }
+)
+
+tips = response.json()
+print('Style Tips:', tips['tips'])</code></pre>
+                        </div>
+                        
+                        <div class="code-block" id="curl">
+                            <pre><code>curl -X POST http://localhost:8000/api/analysis/color-compatibility \
+  -H "Content-Type: application/json" \
+  -d '{
+    "color1": "blue",
+    "color2": "white"
+  }'
+
+# Response:
+# {
+#   "compatibility_score": 0.85,
+#   "compatible": true
+# }</code></pre>
                         </div>
                     </div>
                 </div>
@@ -348,6 +576,34 @@
         </div>
     </section>
 
+    <!-- Newsletter Section -->
+    <section class="newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2>Stay Updated with Modelo</h2>
+                <p>Get the latest updates on AI fashion technology and styling tips</p>
+                <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                    <input type="email" placeholder="Enter your email" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+                <div class="newsletter-features">
+                    <div class="newsletter-feature">
+                        <i class="fas fa-bell"></i>
+                        <span>New Feature Updates</span>
+                    </div>
+                    <div class="newsletter-feature">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Style Tips & Trends</span>
+                    </div>
+                    <div class="newsletter-feature">
+                        <i class="fas fa-gift"></i>
+                        <span>Exclusive Offers</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -358,6 +614,12 @@
                         <span>Modelo</span>
                     </div>
                     <p>Empowering everyone to look and feel their best through intelligent fashion technology.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
                 </div>
                 
                 <div class="footer-section">
@@ -366,7 +628,19 @@
                         <li><a href="#features">Features</a></li>
                         <li><a href="#ai-tech">AI Technology</a></li>
                         <li><a href="#demo">Demo</a></li>
+                        <li><a href="#api">API</a></li>
                         <li><a href="#download">Download</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="docs/">Documentation</a></li>
+                        <li><a href="#">API Reference</a></li>
+                        <li><a href="#">Style Guide</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Community</a></li>
                     </ul>
                 </div>
                 
@@ -377,16 +651,41 @@
                         <li><a href="#">Contact Us</a></li>
                         <li><a href="#">Privacy Policy</a></li>
                         <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Status</a></li>
                     </ul>
                 </div>
             </div>
             
             <div class="footer-bottom">
                 <p>&copy; 2024 Modelo. All rights reserved. Made with ❤️ by the Modelo Team.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Cookies</a>
+                </div>
             </div>
         </div>
     </footer>
 
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading Modelo...</p>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(error => console.log('SW registration failed'));
+            });
+        }
+    </script>
 </body>
 </html>
