@@ -23,7 +23,7 @@ This guide will help you set up the complete Modelo project including the Flutte
   - Xcode (for iOS development on macOS)
 
 #### 2. Python Backend
-- **Python**: Version 3.8 or higher
+- **Python**: Version 3.8 to 3.12 (3.13 not yet fully supported by scikit-learn)
 - **pip**: Python package manager
 - **Virtual Environment**: venv or conda (recommended)
 
@@ -94,6 +94,25 @@ modelo_env\Scripts\activate
 ```
 
 #### Install Python Dependencies
+
+**For Python 3.13 users** (scikit-learn compatibility issue):
+```bash
+# Option 1: Use conda instead of pip
+conda install scikit-learn opencv fastapi uvicorn numpy pandas
+pip install -r requirements.txt --no-deps
+
+# Option 2: Install pre-release version
+pip install --pre scikit-learn
+pip install -r requirements.txt
+
+# Option 3: Use Python 3.12 (recommended)
+# Create new environment with Python 3.12
+conda create -n modelo_env python=3.12
+conda activate modelo_env
+pip install -r requirements.txt
+```
+
+**For Python 3.8-3.12 users**:
 ```bash
 pip install -r requirements.txt
 ```
@@ -306,6 +325,20 @@ pod install
 ```
 
 ### Common Backend Issues
+
+#### Issue: "scikit-learn compilation error" (Python 3.13)
+```bash
+# Solution 1: Use conda
+conda install scikit-learn
+
+# Solution 2: Use pre-release
+pip install --pre scikit-learn
+
+# Solution 3: Downgrade Python
+conda create -n modelo_env python=3.12
+conda activate modelo_env
+pip install -r requirements.txt
+```
 
 #### Issue: "Module not found"
 ```bash
