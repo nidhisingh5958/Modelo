@@ -361,7 +361,12 @@ class _ImageAnalysisScreenState extends State<_ImageAnalysisScreen> {
         // Populate form with AI results
         _nameController.text = result['name'] ?? '';
         _selectedType = result['type'] ?? ClothingType.top;
-        _selectedColor = result['color'] ?? 'black';
+        
+        // Handle color with validation
+        final detectedColor = result['color'] ?? 'black';
+        final validColors = ['black', 'white', 'gray', 'navy', 'brown', 'beige', 'red', 'blue', 'green', 'yellow', 'pink', 'purple', 'orange'];
+        _selectedColor = validColors.contains(detectedColor) ? detectedColor : 'black';
+        
         _patternController.text = result['pattern'] ?? '';
         _fabricController.text = result['fabric'] ?? '';
         _fitController.text = result['fit'] ?? '';
@@ -450,118 +455,254 @@ class _ImageAnalysisScreenState extends State<_ImageAnalysisScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Image and analysis results
+              // Enhanced image analysis card
               Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [BoxShadow(color: AppColors.shadow, blurRadius: 4, offset: const Offset(0, 2))],
+                  gradient: LinearGradient(
+                    colors: [AppColors.surface, AppColors.surfaceVariant],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.shadow,
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            image: DecorationImage(
-                              image: FileImage(widget.imageFile),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: confidence > 70 ? AppColors.success.withOpacity(0.1) : AppColors.warning.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Text(
-                                  'Confidence: ${confidence.toStringAsFixed(0)}%',
-                                  style: TextStyle(
-                                    color: confidence > 70 ? AppColors.success : AppColors.warning,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              if (_analysisResult?['secondaryColors'] != null) ..[
-                                const Text('Detected Colors:', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
-                                const SizedBox(height: 4),
-                                Wrap(
-                                  spacing: 4,
-                                  children: (_analysisResult!['secondaryColors'] as List<String>)
-                                      .take(3)
-                                      .map((color) => Container(
-                                        width: 16,
-                                        height: 16,
-                                        decoration: BoxDecoration(
-                                          color: _getColorFromName(color),
-                                          shape: BoxShape.circle,
-                                          border: Border.all(color: AppColors.border),
-                                        ),
-                                      ))
-                                      .toList(),
+                    // Header with image and confidence
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        children: [
+                          // Enhanced image container
+                          Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
                                 ),
                               ],
-                            ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.file(
+                                widget.imageFile,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // AI Analysis badge
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [AppColors.secondary, AppColors.secondary.withOpacity(0.8)],
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.auto_awesome, color: Colors.white, size: 14),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        'AI Analysis',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                // Confidence indicator
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: confidence > 70 
+                                      ? AppColors.success.withOpacity(0.15) 
+                                      : AppColors.warning.withOpacity(0.15),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: confidence > 70 ? AppColors.success : AppColors.warning,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        confidence > 70 ? Icons.check_circle : Icons.info,
+                                        color: confidence > 70 ? AppColors.success : AppColors.warning,
+                                        size: 16,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        '${confidence.toStringAsFixed(0)}% Confidence',
+                                        style: TextStyle(
+                                          color: confidence > 70 ? AppColors.success : AppColors.warning,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                // Detected colors
+                                if (_analysisResult?['secondaryColors'] != null)
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Detected Colors',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.textPrimary,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Wrap(
+                                        spacing: 6,
+                                        children: (_analysisResult!['secondaryColors'] as List<String>)
+                                            .take(4)
+                                            .map((color) => Container(
+                                              width: 24,
+                                              height: 24,
+                                              decoration: BoxDecoration(
+                                                color: _getColorFromName(color),
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: Colors.white,
+                                                  width: 2,
+                                                ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black.withOpacity(0.2),
+                                                    blurRadius: 4,
+                                                    offset: const Offset(0, 2),
+                                                  ),
+                                                ],
+                                              ),
+                                            ))
+                                            .toList(),
+                                      ),
+                                    ],
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    if (_analysisResult?['suggestions'] != null) ..[
-                      const SizedBox(height: 12),
+                    // AI Suggestions section
+                    if (_analysisResult?['suggestions'] != null)
                       Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                        padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: AppColors.info.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
+                          color: AppColors.info.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: AppColors.info.withOpacity(0.3),
+                            width: 1,
+                          ),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'AI Suggestions:',
-                              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.lightbulb_outline,
+                                  color: AppColors.info,
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'AI Styling Suggestions',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: AppColors.info,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 8),
                             ...(_analysisResult!['suggestions'] as List<String>)
                                 .take(2)
                                 .map((suggestion) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 2),
-                                  child: Text(
-                                    '• $suggestion',
-                                    style: const TextStyle(fontSize: 11),
+                                  padding: const EdgeInsets.only(bottom: 4),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: 4,
+                                        height: 4,
+                                        margin: const EdgeInsets.only(top: 6, right: 8),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.info,
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          suggestion,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: AppColors.textSecondary,
+                                            height: 1.4,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 )),
                           ],
                         ),
                       ),
-                    ],
                   ],
                 ),
               ),
               
               const SizedBox(height: 20),
               
-              Text(
-                'Review & Edit Details',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
+              Row(
+                children: [
+                  Icon(
+                    Icons.edit_outlined,
+                    color: AppColors.secondary,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Review & Edit Details',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ],
               ),
               
               const SizedBox(height: 16),
