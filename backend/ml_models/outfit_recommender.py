@@ -9,16 +9,23 @@ import json
 class OutfitRecommender:
     def __init__(self):
         self.color_harmony = {
-            'red': ['white', 'black', 'navy', 'beige', 'gray'],
-            'blue': ['white', 'beige', 'gray', 'navy', 'brown'],
-            'green': ['white', 'beige', 'brown', 'navy', 'black'],
-            'yellow': ['white', 'navy', 'gray', 'brown', 'black'],
-            'black': ['white', 'red', 'blue', 'yellow', 'pink'],
-            'white': ['black', 'navy', 'red', 'blue', 'green'],
-            'navy': ['white', 'beige', 'red', 'yellow', 'pink'],
-            'gray': ['white', 'black', 'red', 'blue', 'yellow'],
-            'brown': ['white', 'beige', 'blue', 'green', 'yellow'],
-            'beige': ['navy', 'brown', 'blue', 'red', 'green'],
+            # Neutrals - compatible with everything
+            'black': ['white', 'gray', 'beige', 'red', 'blue', 'yellow', 'green', 'navy', 'brown'],
+            'white': ['black', 'gray', 'navy', 'red', 'blue', 'green', 'brown', 'beige'],
+            'gray': ['black', 'white', 'beige', 'navy', 'red', 'blue', 'yellow', 'purple'],
+            'beige': ['white', 'brown', 'navy', 'blue', 'green', 'burgundy', 'olive'],
+            
+            # Primary and secondary colors
+            'red': ['white', 'black', 'gray', 'beige', 'navy', 'green'],
+            'blue': ['white', 'gray', 'beige', 'navy', 'orange', 'brown'],
+            'yellow': ['white', 'gray', 'navy', 'purple', 'brown'],
+            'green': ['white', 'beige', 'brown', 'navy', 'red', 'cream'],
+            
+            # Popular fashion colors
+            'navy': ['white', 'beige', 'gray', 'coral', 'yellow', 'khaki', 'cream'],
+            'brown': ['white', 'beige', 'cream', 'blue', 'green', 'orange'],
+            'burgundy': ['white', 'gray', 'beige', 'navy', 'mint', 'cream'],
+            'olive': ['white', 'beige', 'brown', 'navy', 'cream'],
         }
         
         self.body_type_rules = {
@@ -57,16 +64,87 @@ class OutfitRecommender:
             'workout': ['athletic', 'breathable', 'flexible']
         }
 
-    def calculate_color_compatibility(self, color1, color2):
-        """Calculate compatibility score between two colors"""
-        if color1.lower() == color2.lower():
+    def hex_to_color_name(self, hex_color):
+        """Convert hex color to closest color name"""
+        hex_to_name = {
+            '#FF0000': 'red', '#DC143C': 'red', '#B22222': 'red',
+            '#0000FF': 'blue', '#000080': 'navy', '#4169E1': 'blue',
+            '#FFFF00': 'yellow', '#FFD700': 'yellow', '#FFA500': 'orange',
+            '#008000': 'green', '#00FF00': 'green', '#90EE90': 'green',
+            '#800080': 'purple', '#9370DB': 'purple', '#E6E6FA': 'lavender',
+            '#FFA500': 'orange', '#FF7F50': 'coral', '#FF6347': 'coral',
+            '#000000': 'black', '#FFFFFF': 'white', '#808080': 'gray',
+            '#F5F5DC': 'beige', '#FFFDD0': 'cream', '#FFFFF0': 'ivory',
+            '#A52A2A': 'brown', '#8B4513': 'brown', '#D2691E': 'brown',
+            '#800020': 'burgundy', '#808000': 'olive', '#008080': 'teal',
+            '#98FB98': 'mint'
+        }
+        return hex_to_name.get(hex_color.upper(), 'unknown')
+
+    def calculate_color_compatibility(self, color1, color2, hex1=None, hex2=None):
+        """Enhanced color compatibility using color theory principles"""
+        # Convert hex to color names if provided
+        if hex1:
+            color1 = self.hex_to_color_name(hex1)
+        if hex2:
+            color2 = self.hex_to_color_name(hex2)
+            
+        c1, c2 = color1.lower().strip(), color2.lower().strip()
+        
+        # Same color - high compatibility
+        if c1 == c2:
+            return 0.95
+        
+        # Define color categories
+        neutrals = {'black', 'white', 'gray', 'grey', 'beige', 'cream', 'ivory', 'taupe'}
+        warm_colors = {'red', 'orange', 'yellow', 'coral', 'peach', 'gold', 'burgundy', 'maroon'}
+        cool_colors = {'blue', 'green', 'purple', 'navy', 'teal', 'turquoise', 'mint', 'lavender'}
+        earth_tones = {'brown', 'tan', 'khaki', 'olive', 'rust', 'terracotta'}
+        
+        # Neutral combinations - always compatible
+        if c1 in neutrals and c2 in neutrals:
             return 0.9
         
-        compatible_colors = self.color_harmony.get(color1.lower(), [])
-        if color2.lower() in compatible_colors:
+        # One neutral + any color - highly compatible
+        if c1 in neutrals or c2 in neutrals:
+            return 0.85
+        
+        # Complementary pairs (opposite on color wheel)
+        complementary = {
+            ('red', 'green'), ('blue', 'orange'), ('yellow', 'purple'),
+            ('navy', 'coral'), ('teal', 'coral'), ('burgundy', 'mint')
+        }
+        if (c1, c2) in complementary or (c2, c1) in complementary:
             return 0.8
         
-        return 0.3
+        # Analogous colors (next to each other on color wheel)
+        analogous = {
+            ('red', 'orange'), ('orange', 'yellow'), ('yellow', 'green'),
+            ('green', 'blue'), ('blue', 'purple'), ('purple', 'red'),
+            ('navy', 'blue'), ('teal', 'green')
+        }
+        if (c1, c2) in analogous or (c2, c1) in analogous:
+            return 0.75
+        
+        # Same temperature colors
+        if (c1 in warm_colors and c2 in warm_colors) or (c1 in cool_colors and c2 in cool_colors):
+            return 0.7
+        
+        # Earth tones with neutrals or warm colors
+        if (c1 in earth_tones and (c2 in neutrals or c2 in warm_colors)) or \
+           (c2 in earth_tones and (c1 in neutrals or c1 in warm_colors)):
+            return 0.75
+        
+        # Classic combinations
+        classic_pairs = {
+            ('navy', 'white'), ('black', 'white'), ('denim', 'white'),
+            ('khaki', 'navy'), ('brown', 'cream'), ('burgundy', 'gray')
+        }
+        if (c1, c2) in classic_pairs or (c2, c1) in classic_pairs:
+            return 0.85
+        
+        # Default for unmatched combinations
+        return 0.4
 
     def get_body_type_score(self, item_attributes, body_type, item_type):
         """Score item based on body type recommendations"""

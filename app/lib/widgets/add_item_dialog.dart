@@ -450,7 +450,7 @@ class _ImageAnalysisScreenState extends State<_ImageAnalysisScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Image and confidence
+              // Image and analysis results
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -461,33 +461,94 @@ class _ImageAnalysisScreenState extends State<_ImageAnalysisScreen> {
                 ),
                 child: Column(
                   children: [
-                    Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        image: DecorationImage(
-                          image: FileImage(widget.imageFile),
-                          fit: BoxFit.cover,
+                    Row(
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                              image: FileImage(widget.imageFile),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: confidence > 70 ? AppColors.success.withOpacity(0.1) : AppColors.warning.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  'Confidence: ${confidence.toStringAsFixed(0)}%',
+                                  style: TextStyle(
+                                    color: confidence > 70 ? AppColors.success : AppColors.warning,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              if (_analysisResult?['secondaryColors'] != null) ..[
+                                const Text('Detected Colors:', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+                                const SizedBox(height: 4),
+                                Wrap(
+                                  spacing: 4,
+                                  children: (_analysisResult!['secondaryColors'] as List<String>)
+                                      .take(3)
+                                      .map((color) => Container(
+                                        width: 16,
+                                        height: 16,
+                                        decoration: BoxDecoration(
+                                          color: _getColorFromName(color),
+                                          shape: BoxShape.circle,
+                                          border: Border.all(color: AppColors.border),
+                                        ),
+                                      ))
+                                      .toList(),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (_analysisResult?['suggestions'] != null) ..[
+                      const SizedBox(height: 12),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.info.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'AI Suggestions:',
+                              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+                            ),
+                            const SizedBox(height: 4),
+                            ...(_analysisResult!['suggestions'] as List<String>)
+                                .take(2)
+                                .map((suggestion) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 2),
+                                  child: Text(
+                                    '• $suggestion',
+                                    style: const TextStyle(fontSize: 11),
+                                  ),
+                                )),
+                          ],
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: AppColors.success.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Text(
-                        'AI Confidence: ${confidence.toStringAsFixed(0)}%',
-                        style: const TextStyle(
-                          color: AppColors.success,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
+                    ],
                   ],
                 ),
               ),
@@ -505,14 +566,109 @@ class _ImageAnalysisScreenState extends State<_ImageAnalysisScreen> {
               
               const SizedBox(height: 16),
               
-              // Form fields (simplified version)
+              // Enhanced form fields with AI-detected values
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Item Name',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
+                  suffixIcon: _analysisResult?['name'] != null 
+                    ? const Icon(Icons.auto_awesome, color: AppColors.secondary, size: 16)
+                    : null,
                 ),
                 validator: (value) => value?.isEmpty == true ? 'Please enter a name' : null,
+              ),
+              
+              const SizedBox(height: 16),
+              
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownButtonFormField<ClothingType>(
+                      value: _selectedType,
+                      decoration: InputDecoration(
+                        labelText: 'Type',
+                        border: const OutlineInputBorder(),
+                        suffixIcon: _analysisResult?['type'] != null 
+                          ? const Icon(Icons.auto_awesome, color: AppColors.secondary, size: 16)
+                          : null,
+                      ),
+                      items: ClothingType.values.map((type) {
+                        return DropdownMenuItem(
+                          value: type,
+                          child: Text(type.name.toUpperCase()),
+                        );
+                      }).toList(),
+                      onChanged: (value) => setState(() => _selectedType = value!),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: DropdownButtonFormField<String>(
+                      value: _selectedColor,
+                      decoration: InputDecoration(
+                        labelText: 'Color',
+                        border: const OutlineInputBorder(),
+                        suffixIcon: _analysisResult?['color'] != null 
+                          ? const Icon(Icons.auto_awesome, color: AppColors.secondary, size: 16)
+                          : null,
+                      ),
+                      items: ['black', 'white', 'gray', 'navy', 'brown', 'beige', 'red', 'blue', 'green', 'yellow', 'pink', 'purple', 'orange']
+                          .map((color) => DropdownMenuItem(
+                            value: color,
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 16,
+                                  height: 16,
+                                  decoration: BoxDecoration(
+                                    color: _getColorFromName(color),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: AppColors.border),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(color.toUpperCase()),
+                              ],
+                            ),
+                          ))
+                          .toList(),
+                      onChanged: (value) => setState(() => _selectedColor = value!),
+                    ),
+                  ),
+                ],
+              ),
+              
+              const SizedBox(height: 16),
+              
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _patternController,
+                      decoration: InputDecoration(
+                        labelText: 'Pattern',
+                        border: const OutlineInputBorder(),
+                        suffixIcon: _analysisResult?['pattern'] != null 
+                          ? const Icon(Icons.auto_awesome, color: AppColors.secondary, size: 16)
+                          : null,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _fabricController,
+                      decoration: InputDecoration(
+                        labelText: 'Fabric',
+                        border: const OutlineInputBorder(),
+                        suffixIcon: _analysisResult?['fabric'] != null 
+                          ? const Icon(Icons.auto_awesome, color: AppColors.secondary, size: 16)
+                          : null,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               
               const SizedBox(height: 16),
@@ -572,11 +728,30 @@ class _ImageAnalysisScreenState extends State<_ImageAnalysisScreen> {
       Navigator.pop(context);
       
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Item added successfully!'),
+        SnackBar(
+          content: Text('Item added with ${(_analysisResult?['confidence'] * 100 ?? 0).toStringAsFixed(0)}% AI confidence!'),
           backgroundColor: AppColors.success,
         ),
       );
+    }
+  }
+  
+  Color _getColorFromName(String colorName) {
+    switch (colorName.toLowerCase()) {
+      case 'red': return Colors.red;
+      case 'blue': return Colors.blue;
+      case 'green': return Colors.green;
+      case 'yellow': return Colors.yellow;
+      case 'black': return Colors.black;
+      case 'white': return Colors.white;
+      case 'gray': case 'grey': return Colors.grey;
+      case 'brown': return Colors.brown;
+      case 'pink': return Colors.pink;
+      case 'purple': return Colors.purple;
+      case 'orange': return Colors.orange;
+      case 'navy': return Colors.indigo;
+      case 'beige': return const Color(0xFFF5F5DC);
+      default: return Colors.grey[300]!;
     }
   }
 

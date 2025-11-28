@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/wardrobe_provider.dart';
 import '../widgets/outfit_suggestion_card.dart';
 import '../models/wardrobe_item.dart';
+import '../utils/app_colors.dart';
 
 class OutfitGeneratorScreen extends StatefulWidget {
   const OutfitGeneratorScreen({super.key});
@@ -28,7 +29,7 @@ class _OutfitGeneratorScreenState extends State<OutfitGeneratorScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Outfit Generator'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+
       ),
       body: Consumer<WardrobeProvider>(
         builder: (context, provider, child) {
@@ -99,6 +100,10 @@ class _OutfitGeneratorScreenState extends State<OutfitGeneratorScreen> {
                                   },
                             icon: const Icon(Icons.auto_awesome),
                             label: const Text('Generate Suggestions'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.secondary,
+                              foregroundColor: Colors.white,
+                            ),
                           ),
                         ),
                       ],
@@ -290,6 +295,10 @@ class _OutfitGeneratorScreenState extends State<OutfitGeneratorScreen> {
                             const SnackBar(content: Text('Outfit saved!')),
                           );
                         },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.secondary,
+                          foregroundColor: Colors.white,
+                        ),
                         child: const Text('Save Outfit'),
                       ),
                     ),

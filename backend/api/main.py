@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import sys
@@ -22,6 +23,9 @@ app.add_middleware(
 
 # Initialize ML model
 recommender = OutfitRecommender()
+
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Pydantic models
 class UserProfile(BaseModel):
@@ -100,21 +104,26 @@ async def get_style_tips(user_profile: UserProfile):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating style tips: {str(e)}")
 
+class ColorCompatibilityRequest(BaseModel):
+    color1: str
+    color2: str
+    hex1: Optional[str] = None
+    hex2: Optional[str] = None
+
 @app.post("/api/analysis/color-compatibility")
-async def analyze_color_compatibility(colors: Dict[str, List[str]]):
+async def analyze_color_compatibility(request: ColorCompatibilityRequest):
     """Analyze color compatibility between items"""
     try:
-        color1 = colors.get("color1", "")
-        color2 = colors.get("color2", "")
-        
-        if not color1 or not color2:
+        if not request.color1 or not request.color2:
             raise HTTPException(status_code=400, detail="Both colors must be provided")
         
-        compatibility_score = recommender.calculate_color_compatibility(color1, color2)
+        compatibility_score = recommender.calculate_color_compatibility(
+            request.color1, request.color2, request.hex1, request.hex2
+        )
         
         return {
-            "color1": color1,
-            "color2": color2,
+            "color1": request.color1,
+            "color2": request.color2,
             "compatibility_score": compatibility_score,
             "compatible": compatibility_score >= 0.6
         }
@@ -156,6 +165,42 @@ async def get_body_type_rules():
 async def get_occasion_styles():
     """Get occasion-based styling guidelines"""
     return {"occasion_styles": recommender.occasion_styles}
+
+@app.get("/api/data/color-wheel")
+async def get_color_wheel():
+    """Get color wheel data for visual color picker"""
+    return {
+        "color_wheel": {
+            "primary": [
+                {"name": "red", "hex": "#FF0000", "position": 0},
+                {"name": "blue", "hex": "#0000FF", "position": 120},
+                {"name": "yellow", "hex": "#FFFF00", "position": 240}
+            ],
+            "secondary": [
+                {"name": "orange", "hex": "#FFA500", "position": 30},
+                {"name": "green", "hex": "#008000", "position": 150},
+                {"name": "purple", "hex": "#800080", "position": 270}
+            ],
+            "neutrals": [
+                {"name": "black", "hex": "#000000"},
+                {"name": "white", "hex": "#FFFFFF"},
+                {"name": "gray", "hex": "#808080"},
+                {"name": "beige", "hex": "#F5F5DC"},
+                {"name": "cream", "hex": "#FFFDD0"},
+                {"name": "ivory", "hex": "#FFFFF0"}
+            ],
+            "fashion_colors": [
+                {"name": "navy", "hex": "#000080"},
+                {"name": "burgundy", "hex": "#800020"},
+                {"name": "olive", "hex": "#808000"},
+                {"name": "brown", "hex": "#A52A2A"},
+                {"name": "coral", "hex": "#FF7F50"},
+                {"name": "teal", "hex": "#008080"},
+                {"name": "mint", "hex": "#98FB98"},
+                {"name": "lavender", "hex": "#E6E6FA"}
+            ]
+        }
+    }
 
 @app.post("/api/upload/image")
 async def upload_image(file: UploadFile = File(...)):

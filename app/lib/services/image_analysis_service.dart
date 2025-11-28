@@ -1,42 +1,60 @@
 import 'dart:io';
-import 'dart:math';
 import '../models/wardrobe_item.dart';
+import 'advanced_image_analysis.dart';
 
 class ImageAnalysisService {
   static Future<Map<String, dynamic>> analyzeClothingImage(File imageFile) async {
-    // Simulate AI analysis - in production, this would call your ML backend
-    await Future.delayed(const Duration(seconds: 2));
-    
-    // Mock analysis results based on image analysis
-    final random = Random();
-    final colors = ['black', 'white', 'blue', 'red', 'green', 'gray', 'brown', 'navy', 'beige'];
-    final patterns = ['solid', 'stripes', 'polka dots', 'floral', 'geometric'];
-    final fabrics = ['cotton', 'polyester', 'wool', 'silk', 'denim', 'leather'];
-    final fits = ['fitted', 'loose', 'regular', 'slim', 'oversized'];
-    
-    // Simulate clothing type detection based on image aspect ratio
-    final ClothingType detectedType = _detectClothingType();
-    final String detectedColor = colors[random.nextInt(colors.length)];
-    final String detectedPattern = patterns[random.nextInt(patterns.length)];
-    final String detectedFabric = fabrics[random.nextInt(fabrics.length)];
-    final String detectedFit = fits[random.nextInt(fits.length)];
+    try {
+      // Use advanced on-device image analysis
+      final analysisResult = await AdvancedImageAnalysis.analyzeClothingImage(imageFile.path);
+      
+      return {
+        'name': _generateItemName(analysisResult.clothingType, analysisResult.primaryColor),
+        'type': analysisResult.clothingType,
+        'color': analysisResult.primaryColor,
+        'pattern': analysisResult.pattern,
+        'fabric': analysisResult.fabric,
+        'fit': _determineFit(analysisResult.fabric, analysisResult.clothingType),
+        'season': _detectSeason(analysisResult.clothingType, analysisResult.fabric),
+        'tags': _generateTags(analysisResult.clothingType, analysisResult.primaryColor, analysisResult.pattern, analysisResult.fabric),
+        'confidence': (analysisResult.colorConfidence + analysisResult.patternConfidence + analysisResult.fabricConfidence) / 3,
+        'suggestions': analysisResult.suggestions,
+        'secondaryColors': analysisResult.secondaryColors,
+      };
+    } catch (e) {
+      // Fallback to basic analysis if advanced analysis fails
+      return _basicImageAnalysis(imageFile);
+    }
+  }
+  
+  static Future<Map<String, dynamic>> _basicImageAnalysis(File imageFile) async {
+    // Basic fallback analysis
+    await Future.delayed(const Duration(seconds: 1));
     
     return {
-      'name': _generateItemName(detectedType, detectedColor),
-      'type': detectedType,
-      'color': detectedColor,
-      'pattern': detectedPattern,
-      'fabric': detectedFabric,
-      'fit': detectedFit,
-      'season': _detectSeason(detectedType, detectedFabric),
-      'tags': _generateTags(detectedType, detectedColor, detectedPattern),
-      'confidence': 0.85 + (random.nextDouble() * 0.1), // 85-95% confidence
+      'name': 'Clothing Item',
+      'type': ClothingType.top,
+      'color': 'unknown',
+      'pattern': 'solid',
+      'fabric': 'unknown',
+      'fit': 'regular',
+      'season': Season.allSeason,
+      'tags': ['clothing'],
+      'confidence': 0.3,
+      'suggestions': ['Please try again with better lighting for improved analysis'],
     };
   }
   
-  static ClothingType _detectClothingType() {
-    final types = ClothingType.values;
-    return types[Random().nextInt(types.length)];
+  static String _determineFit(String fabric, ClothingType type) {
+    // Determine fit based on fabric and type
+    if (fabric == 'silk' || fabric == 'wool') {
+      return 'fitted';
+    } else if (fabric == 'cotton' && type == ClothingType.top) {
+      return 'regular';
+    } else if (fabric == 'denim') {
+      return 'slim';
+    }
+    return 'regular';
   }
   
   static Season _detectSeason(ClothingType type, String fabric) {
@@ -63,7 +81,7 @@ class ImageAnalysisService {
     return '$color $name';
   }
   
-  static List<String> _generateTags(ClothingType type, String color, String pattern) {
+  static List<String> _generateTags(ClothingType type, String color, String pattern, String fabric) {
     final tags = <String>[];
     
     // Add type-based tags
@@ -96,6 +114,25 @@ class ImageAnalysisService {
     // Add pattern-based tags
     if (pattern != 'solid') {
       tags.add('patterned');
+    }
+    
+    // Add fabric-based tags
+    switch (fabric) {
+      case 'cotton':
+        tags.addAll(['breathable', 'natural']);
+        break;
+      case 'silk':
+        tags.addAll(['luxury', 'elegant']);
+        break;
+      case 'wool':
+        tags.addAll(['warm', 'cozy']);
+        break;
+      case 'denim':
+        tags.addAll(['casual', 'durable']);
+        break;
+      case 'leather':
+        tags.addAll(['edgy', 'statement']);
+        break;
     }
     
     return tags;

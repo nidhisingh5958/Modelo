@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../providers/wardrobe_provider.dart';
 import '../models/user_profile.dart';
+import '../utils/app_colors.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -63,7 +64,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
             onPressed: _saveProfile,
@@ -226,6 +226,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     }
                                   });
                                 },
+                                backgroundColor: Colors.white,
+                                selectedColor: AppColors.secondary.withOpacity(0.2),
+                                checkmarkColor: AppColors.secondary,
+                                labelStyle: TextStyle(
+                                  color: isSelected ? AppColors.secondary : AppColors.textSecondary,
+                                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                ),
+                                side: BorderSide(
+                                  color: isSelected ? AppColors.secondary : AppColors.border,
+                                ),
                                 avatar: Container(
                                   width: 16,
                                   height: 16,
@@ -258,6 +268,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     }
                                   });
                                 },
+                                backgroundColor: Colors.white,
+                                selectedColor: AppColors.secondary.withOpacity(0.2),
+                                checkmarkColor: AppColors.secondary,
+                                labelStyle: TextStyle(
+                                  color: isSelected ? AppColors.secondary : AppColors.textSecondary,
+                                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                ),
+                                side: BorderSide(
+                                  color: isSelected ? AppColors.secondary : AppColors.border,
+                                ),
                               );
                             }).toList(),
                           ),
