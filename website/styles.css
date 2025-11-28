@@ -664,6 +664,96 @@ body {
     font-weight: 600;
 }
 
+/* Direct Download Section */
+.direct-download {
+    margin-top: 3rem;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+.direct-download-header {
+    margin-bottom: 2rem;
+}
+
+.direct-download-header h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.direct-download-header p {
+    opacity: 0.8;
+    font-size: 1rem;
+}
+
+.apk-download {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.apk-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255,255,255,0.3);
+    backdrop-filter: blur(10px);
+    min-width: 250px;
+}
+
+.apk-btn:hover {
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.5);
+    transform: translateY(-2px);
+}
+
+.apk-btn i:first-child {
+    font-size: 2rem;
+    color: #a4d65e;
+}
+
+.apk-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.apk-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.apk-details {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.apk-btn i:last-child {
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+
+.apk-note {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    text-align: center;
+    max-width: 300px;
+}
+
+.apk-note i {
+    color: #ffd89b;
+    flex-shrink: 0;
+}
+
 /* Footer */
 .footer {
     background: #1e293b;
@@ -1337,6 +1427,16 @@ body {
     .download-buttons {
         flex-direction: column;
         align-items: center;
+    }
+    
+    .apk-btn {
+        min-width: auto;
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .apk-note {
+        text-align: center;
     }
     
     .newsletter-form {

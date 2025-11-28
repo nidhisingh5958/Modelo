@@ -1,0 +1,6 @@
+This is a placeholder APK file for the Modelo app.
+To replace this with the actual APK:
+1. Build your Flutter app for Android: flutter build apk --release
+2. Copy the generated APK from app/build/app/outputs/flutter-apk/app-release.apk
+3. Replace this file with the actual APK
+4. Update the version and size information in the HTML if needed
