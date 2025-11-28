@@ -125,15 +125,20 @@ class WardrobeProvider with ChangeNotifier {
     }
   }
 
-  void generateOutfitSuggestions({
+  Future<void> generateOutfitSuggestions({
     required String occasion,
     String? weather,
     int maxSuggestions = 5,
-  }) {
-    if (_userProfile == null || _wardrobeItems.isEmpty) {
+  }) async {
+    if (_wardrobeItems.isEmpty) {
       _outfitSuggestions = [];
       notifyListeners();
       return;
+    }
+
+    // Ensure we have a user profile
+    if (_userProfile == null) {
+      await _ensureUserProfile();
     }
 
     _outfitSuggestions = AIStylingService.generateOutfitSuggestions(
@@ -145,6 +150,29 @@ class WardrobeProvider with ChangeNotifier {
     );
     
     notifyListeners();
+  }
+
+  Future<void> _ensureUserProfile() async {
+    try {
+      _userProfile = await _databaseService.getUserProfile('default_user');
+    } catch (e) {
+      // Create default profile if none exists
+      _userProfile = UserProfile(
+        id: 'default_user',
+        name: 'User',
+        gender: 'other',
+        bodyType: 'rectangle',
+        skinUndertone: 'neutral',
+        faceShape: 'oval',
+        favoriteColors: ['blue', 'white', 'black'],
+        dislikedPatterns: [],
+        measurements: {},
+        stylePreferences: {},
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      await _databaseService.insertUserProfile(_userProfile!);
+    }
   }
 
   List<WardrobeItem> getItemsByType(ClothingType type) {

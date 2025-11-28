@@ -14,7 +14,13 @@ class LaModa extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => WardrobeProvider(),
+      create: (context) {
+        final provider = WardrobeProvider();
+        // Initialize data on app start
+        provider.loadWardrobeItems();
+        provider.loadUserProfile('default_user');
+        return provider;
+      },
       child: MaterialApp(
         title: 'Modelo - AI Wardrobe Manager',
         debugShowCheckedModeBanner: false,

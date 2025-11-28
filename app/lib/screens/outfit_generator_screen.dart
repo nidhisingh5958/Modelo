@@ -91,8 +91,8 @@ class _OutfitGeneratorScreenState extends State<OutfitGeneratorScreen> {
                           child: ElevatedButton.icon(
                             onPressed: provider.wardrobeItems.isEmpty
                                 ? null
-                                : () {
-                                    provider.generateOutfitSuggestions(
+                                : () async {
+                                    await provider.generateOutfitSuggestions(
                                       occasion: _selectedOccasion,
                                       weather: _selectedWeather,
                                       maxSuggestions: 6,
