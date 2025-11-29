@@ -7,7 +7,7 @@ class DemoData {
 
   static UserProfile createDemoProfile() {
     return UserProfile(
-      id: 'demo_user',
+      id: 'default_user',
       name: 'Demo User',
       gender: 'female',
       bodyType: 'hourglass',

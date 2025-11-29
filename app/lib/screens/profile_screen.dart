@@ -26,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   
   final Map<String, String> _measurements = {};
 
-  final List<String> _genders = ['female', 'male', 'non-binary'];
+  final List<String> _genders = ['female', 'male', 'non-binary', 'other'];
   final List<String> _bodyTypes = ['pear', 'apple', 'hourglass', 'rectangle', 'inverted triangle'];
   final List<String> _skinUndertones = ['warm', 'cool', 'neutral'];
   final List<String> _faceShapes = ['oval', 'round', 'square', 'heart', 'diamond'];

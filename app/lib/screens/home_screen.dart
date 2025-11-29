@@ -300,8 +300,8 @@ class HomeTab extends StatelessWidget {
                           const Text('No suggestions yet'),
                           const SizedBox(height: 8),
                           ElevatedButton(
-                            onPressed: () {
-                              provider.generateOutfitSuggestions(
+                            onPressed: () async {
+                              await provider.generateOutfitSuggestions(
                                 occasion: 'casual',
                                 weather: 'mild',
                               );

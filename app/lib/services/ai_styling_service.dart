@@ -155,11 +155,11 @@ class AIStylingService {
     List<String> bottomRules = rules['bottoms'] ?? [];
     List<String> avoidRules = rules['avoid'] ?? [];
 
-    // Simple rule checking (in a real app, this would be more sophisticated)
+    // Simple rule checking with flexible matching
     bool topSuitable = topRules.isEmpty || 
-        topRules.any((rule) => top.fit?.toLowerCase().contains(rule) ?? false);
+        topRules.any((rule) => _matchesFitRule(top.fit, rule));
     bool bottomSuitable = bottomRules.isEmpty || 
-        bottomRules.any((rule) => bottom.fit?.toLowerCase().contains(rule) ?? false);
+        bottomRules.any((rule) => _matchesFitRule(bottom.fit, rule));
     
     return topSuitable && bottomSuitable;
   }
@@ -202,6 +202,29 @@ class AIStylingService {
         return Season.fall;
       default:
         return Season.allSeason;
+    }
+  }
+
+  static bool _matchesFitRule(String? itemFit, String rule) {
+    if (itemFit == null) return false;
+    
+    String fit = itemFit.toLowerCase();
+    String ruleKey = rule.toLowerCase();
+    
+    // Flexible matching for common fit descriptions
+    switch (ruleKey) {
+      case 'fitted':
+        return fit.contains('fitted') || fit.contains('tight') || fit.contains('slim');
+      case 'straight leg':
+        return fit.contains('straight') || fit.contains('regular');
+      case 'high waisted':
+        return fit.contains('high') || fit.contains('waisted');
+      case 'wrap style':
+        return fit.contains('wrap');
+      case 'belted':
+        return fit.contains('belted');
+      default:
+        return fit.contains(ruleKey);
     }
   }
 

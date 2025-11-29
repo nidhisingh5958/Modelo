@@ -40,6 +40,7 @@ class OutfitSuggestionCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           // Outfit preview
           Container(
@@ -147,72 +148,83 @@ class OutfitSuggestionCard extends StatelessWidget {
             ),
           ),
             
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  outfit.name,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: Color(0xFF232F3E),
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 6),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFF9900).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    outfit.occasion.toUpperCase(),
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    outfit.name,
                     style: const TextStyle(
-                      fontSize: 10,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFFFF9900),
+                      fontSize: 14,
+                      color: Color(0xFF232F3E),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFF9900).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      outfit.occasion.toUpperCase(),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFFFF9900),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.checkroom,
-                      size: 12,
-                      color: Colors.grey[600],
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${outfitItems.length} items',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    if (outfit.weather != null) ...[
-                      const SizedBox(width: 8),
-                      Icon(
-                        Icons.wb_sunny,
-                        size: 12,
-                        color: Colors.grey[600],
-                      ),
-                      const SizedBox(width: 2),
-                      Text(
-                        outfit.weather!,
-                        style: TextStyle(
-                          fontSize: 11,
+                  const SizedBox(height: 6),
+                  Flexible(
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.checkroom,
+                          size: 12,
                           color: Colors.grey[600],
                         ),
-                      ),
-                    ],
-                  ],
-                ),
-              ],
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Text(
+                            '${outfitItems.length} items',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey[600],
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (outfit.weather != null) ...[
+                          const SizedBox(width: 8),
+                          Icon(
+                            Icons.wb_sunny,
+                            size: 12,
+                            color: Colors.grey[600],
+                          ),
+                          const SizedBox(width: 2),
+                          Flexible(
+                            child: Text(
+                              outfit.weather!,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: Colors.grey[600],
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
